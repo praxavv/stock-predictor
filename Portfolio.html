@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pranav | Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background-color: #0b0b0b;
+        color: #fff;
+    }
+
+    header {
+        background: #0b0b0b;
+        padding: 20px 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+    }
+
+    header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8em;
+        background: linear-gradient(45deg, #d4af37, #f7e9a0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 2px;
+    }
+
+    nav a {
+    display: inline-block;
+    margin-left: 25px;
+    padding: 6px 22px;
+    font-size:0.9em;
+    letter-spacing:0.5px;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid transparent;
+    color: #d4af37;
+    background: linear-gradient(
+        110deg,
+        #0b0b0b 0%,
+        #0b0b0b 40%,
+        rgba(212,175,55,0.3) 50%,
+        #0b0b0b 60%,
+        #0b0b0b 100%
+    );
+    background-size: 250% 100%;
+    animation: shimmer 4s infinite;
+    transition: all 0.3s ease;
+
+    /* angled edges */
+    clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%);
+}
+
+nav a:hover {
+    border: 1px solid #d4af37;
+    background: linear-gradient(45deg, #d4af37, #f7e9a0);
+    color: black;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
+    animation: none;
+}
+
+nav a:hover {
+    border: 1px solid #d4af37;
+    background: linear-gradient(45deg, #d4af37, #f7e9a0);
+    color: black;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
+    background-size: 100% 100%;
+    animation: none;
+}
+
+@keyframes shimmer {
+    0% { background-position: -250% 0; }
+    100% { background-position: 250% 0; }
+}
+
+    .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        height: 90vh;
+        padding: 0 20px;
+        background: linear-gradient(to bottom, #0b0b0b, #141414);
+        animation: fadeIn 1.5s ease-in;
+    }
+
+    .hero h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5em;
+        margin-bottom: 15px;
+        background: linear-gradient(45deg, #d4af37, #f7e9a0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+        max-width: 600px;
+        font-size: 1.2em;
+        color: #ccc;
+        margin-bottom: 35px;
+        line-height: 1.7;
+    }
+
+    .btn {
+        padding: 12px 35px;
+        border: 2px solid #d4af37;
+        background: transparent;
+        color: #d4af37;
+        font-size: 1em;
+        cursor: pointer;
+        letter-spacing: 1px;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        background: linear-gradient(45deg, #d4af37, #f7e9a0);
+        color: black;
+        box-shadow: 0 0 15px #d4af37;
+    }
+
+    .section {
+        padding: 70px 20px;
+        text-align: center;
+        background-color: #0f0f0f;
+        border-top: 1px solid rgba(255, 215, 0, 0.08);
+        animation: fadeInUp 1.2s ease both;
+    }
+
+    .section h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.3em;
+        background: linear-gradient(45deg, #d4af37, #f7e9a0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+    }
+
+    .section p {
+        max-width: 700px;
+        margin: auto;
+        color: #aaa;
+        line-height: 1.6;
+    }
+
+    footer {
+        padding: 20px;
+        text-align: center;
+        font-size: 0.9em;
+        color: #555;
+        border-top: 1px solid rgba(255, 215, 0, 0.08);
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0;}
+        to {opacity: 1;}
+    }
+
+    @keyframes fadeInUp {
+        from {opacity: 0; transform: translateY(20px);}
+        to {opacity: 1; transform: translateY(0);}
+        
+        @keyframes fadeBlackToGold {
+    0% {
+        opacity: 0;
+        color: black;
+    }
+    50% {
+        opacity: 1;
+        color: #555; /* mid transition */
+    }
+    100% {
+        color: #d4af37;
+    }
+}
+
+#viewMessage.fadeInGold {
+    animation: fadeBlackToGold 5s ease forwards;
+}
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>PRANAV</h1>
+    <nav>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h2>Hello, I'm Pranav</h2>
+    <p>I create premium, high-impact digital experiences with a perfect blend of design elegance and technical precision.</p>
+    <button class="btn" id="viewWorkBtn">View My Work</button>
+<p id="viewMessage" style="display:none; margin-top:15px; font-size:1.1em; font-family:'Playfair Display', serif;"></p>
+</section>
+
+<section class="section" id="about">
+    <h3>About Me</h3>
+    <p>With a passion for clean design and flawless execution, I bring visions to life through a balance of artistry and engineering. My work reflects attention to detail and a deep commitment to premium quality.</p>
+</section>
+
+<section class="section" id="projects">
+    <h3>Projects</h3>
+    <p>From luxury brand websites to cutting-edge web applications, my portfolio showcases projects that embody elegance, innovation, and functionality. Every pixel is intentional, every interaction smooth.</p>
+</section>
+
+<section class="section" id="contact">
+    <h3>Contact Me</h3>
+    <p>Let's collaborate and bring your ideas to life. Reach out for projects, partnerships, or creative discussions that push boundaries and deliver excellence.</p>
+</section>
+
+<footer>
+    © 2025 Pranav | All Rights Reserved
+</footer>
+<script>
+document.getElementById("viewWorkBtn").addEventListener("click", function() {
+    const msg = document.getElementById("viewMessage");
+    msg.textContent = "✨ Continue scrolling to view my work";
+    msg.style.display = "block";
+    msg.classList.remove("fadeInGold"); // reset animation if clicked again
+
+    void msg.offsetWidth; // trick to restart animation
+    msg.classList.add("fadeInGold");
+});
+</script>
+</body>
+</html>
