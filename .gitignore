@@ -1,0 +1,53 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+myenv/
+venv/
+env/
+
+# Jupyter / Streamlit / Cache
+.ipynb_checkpoints/
+.streamlit/
+**/.DS_Store
+*.log
+
+# Python packaging
+build/
+dist/
+.eggs/
+*.egg-info/
+
+# Environment / Secrets
+.env
+*.env
+*.ini
+*.cfg
+secrets.json
+credentials.json
+
+# ML-specific
+*.pkl
+*.h5
+*.joblib
+*.onnx
+*.pt
+*.pth
+
+# OS/system files
+Thumbs.db
+.DS_Store
+
+# IDE/editors
+.vscode/
+.idea/
+
+# Test files
+test.py
+
+#swp file (micro's file)
+*.swp
