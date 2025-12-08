@@ -136,31 +136,3 @@ This will open the app in your browser automatically.
 MIT License — free to use, modify, distribute.
 
 
-Environment Layer
-│
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-└── myenv/
-
-Application Core
-│
-├── core.py  ← central engine: data + ML + processing
-├── features.py  ← indicators + feature engineering
-└── stock.py  ← main Streamlit UI
-
-UI Extensions
-│
-└── pages/
-    └── charts.py  ← advanced charting page
-
-Testing & Documentation
-│
-├── test.py
-└── README.md
-
-Generated Files
-└── __pycache__
-
-
-
