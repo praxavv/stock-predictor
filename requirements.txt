@@ -1,0 +1,9 @@
+numpy>=1.25.0
+pandas>=2.1.0
+scikit-learn>=1.3.0
+yfinance>=0.2.27
+streamlit>=1.26.0
+plotly>=6.0.0
+matplotlib>=3.8.0       # if you plan to plot outside Plotly
+seaborn>=0.13.2         # optional advanced plotting
+joblib>=1.3.2           # for saving ML models

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: sp_postgres
+    environment:
+      POSTGRES_USER: spuser
+      POSTGRES_PASSWORD: sppass
+      POSTGRES_DB: spdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: sp_app
+    depends_on:
+      - db
+    ports:
+      - "8501:8501"   # Streamlit exposed port
+    environment:
+      DATABASE_URL: postgres://spuser:sppass@db:5432/spdb
+    volumes:
+      - .:/app        # optional: live reload for development
+
+volumes:
+  postgres_data:
