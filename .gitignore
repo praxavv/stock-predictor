@@ -41,7 +41,6 @@ Thumbs.db
 
 # Jenkins
 Jenkinsfile.bak
-Jenkinsfile
 
 # Temporary files
 .gitignore.swp
