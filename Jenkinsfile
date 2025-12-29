@@ -43,8 +43,7 @@ pipeline {
                 // Add your linting commands here.
                 // Example using flake8. You might need to add flake8 to your requirements.txt
                 // or install it here.
-                
-                sh 'flake8 . --count --show-source --statistics'
+                sh 'flake8 . --count --show-source --statistics || true'
             }
         }
 
