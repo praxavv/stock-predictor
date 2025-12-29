@@ -10,6 +10,9 @@ COPY requirements.txt .
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+#flake8 installation here
+RUN pip install --no-cache-dir flake8
+
 # Copy the rest of the application code into the container at /app
 COPY . .
 
