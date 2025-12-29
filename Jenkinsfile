@@ -25,7 +25,7 @@ pipeline {
                     // We build a Docker image from the Dockerfile in the repository.
                     // The image is tagged with the build ID to keep it unique.
                     echo "Building Docker image: ${DOCKER_IMAGE_NAME}:${env.BUILD_ID}"
-                    docker.build("${DOCKER_IMAGE_NAME}:${env.BUILD_ID}", ".")
+                    docker.build("${DOCKER_IMAGE_NAME}:latest", ".")
                 }
             }
         }
@@ -65,9 +65,17 @@ pipeline {
             }
         }
 
-        // You can add more stages here, for example:
-        // - A 'Push Image' stage to push the Docker image to a registry.
-        // - A 'Deploy' stage to deploy your application.
+        // INSERT DEPLOY STAGE HERE ⬇️⬇️⬇️
+        stage('Deploy') {
+            steps {
+                script {
+                    sh 'docker stop stock_app || true'
+                    sh 'docker rm stock_app || true'
+                    sh 'docker run -d -p 8501:8501 --name stock_app sp:latest'
+                }
+            }
+        }
+        // INSERT DEPLOY STAGE HERE ⬆️⬆️⬆️
 
     }
 
