@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Models | Pranav</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:#0b0b0b;
+color:white;
+font-family:Poppins;
+}
+
+header{
+padding:15px 40px;
+border-bottom:1px solid rgba(212,175,55,0.2);
+}
+
+header h1{
+font-family:'Playfair Display';
+background:linear-gradient(45deg,#d4af37,#f7e9a0);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:50px 20px;
+}
+
+.model{
+background:#121212;
+border:1px solid rgba(212,175,55,0.2);
+border-radius:10px;
+padding:30px;
+margin-bottom:40px;
+}
+
+.model h2{
+font-family:'Playfair Display';
+color:#d4af37;
+}
+
+input{
+padding:10px;
+margin:6px;
+background:#1a1a1a;
+border:1px solid #333;
+color:white;
+border-radius:6px;
+width:120px;
+}
+
+button{
+padding:10px 20px;
+margin-top:10px;
+background:transparent;
+border:1px solid #d4af37;
+color:#d4af37;
+cursor:pointer;
+border-radius:20px;
+}
+
+button:hover{
+background:linear-gradient(45deg,#d4af37,#f7e9a0);
+color:black;
+}
+
+.result{
+margin-top:15px;
+font-size:18px;
+color:#f7e9a0;
+}
+
+.guide{
+font-size:14px;
+color:#aaa;
+margin-bottom:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Financial Models Lab</h1>
+</header>
+
+<div class="container">
+
+<!-- DCF MODEL -->
+
+<div class="model">
+
+<h2>Discounted Cash Flow (DCF)</h2>
+
+<p class="guide">
+Estimate company value by discounting future cash flows.
+Enter projected cash flow, discount rate, and years.
+</p>
+
+<input id="dcfCashflow" placeholder="Cash Flow">
+<input id="dcfRate" placeholder="Discount %">
+<input id="dcfYears" placeholder="Years">
+
+<br>
+
+<button onclick="calculateDCF()">Calculate Value</button>
+
+<div class="result" id="dcfResult"></div>
+
+</div>
+
+
+<!-- LBO MODEL -->
+
+<div class="model">
+
+<h2>Leveraged Buyout (LBO)</h2>
+
+<p class="guide">
+Estimate investor return using debt financing.
+Enter purchase price, exit price, and equity invested.
+</p>
+
+<input id="lboBuy" placeholder="Purchase Price">
+<input id="lboExit" placeholder="Exit Price">
+<input id="lboEquity" placeholder="Equity Invested">
+
+<br>
+
+<button onclick="calculateLBO()">Calculate Return</button>
+
+<div class="result" id="lboResult"></div>
+
+</div>
+
+
+<!-- IRR MODEL -->
+
+<div class="model">
+
+<h2>Investment IRR</h2>
+
+<p class="guide">
+Estimate annualized return on an investment.
+</p>
+
+<input id="irrInvest" placeholder="Initial Investment">
+<input id="irrExit" placeholder="Exit Value">
+<input id="irrYears" placeholder="Years">
+
+<br>
+
+<button onclick="calculateIRR()">Calculate IRR</button>
+
+<div class="result" id="irrResult"></div>
+
+</div>
+
+
+</div>
+
+<script>
+
+// DCF
+
+function calculateDCF(){
+
+let cashflow = parseFloat(document.getElementById("dcfCashflow").value);
+let rate = parseFloat(document.getElementById("dcfRate").value)/100;
+let years = parseFloat(document.getElementById("dcfYears").value);
+
+let value = 0;
+
+for(let i=1;i<=years;i++){
+value += cashflow / Math.pow(1+rate,i);
+}
+
+document.getElementById("dcfResult").innerText =
+"Estimated Company Value: $" + value.toFixed(2);
+
+}
+
+
+// LBO
+
+function calculateLBO(){
+
+let buy = parseFloat(document.getElementById("lboBuy").value);
+let exit = parseFloat(document.getElementById("lboExit").value);
+let equity = parseFloat(document.getElementById("lboEquity").value);
+
+let returnMultiple = exit / equity;
+
+document.getElementById("lboResult").innerText =
+"Equity Multiple: " + returnMultiple.toFixed(2) + "x";
+
+}
+
+
+// IRR
+
+function calculateIRR(){
+
+let invest = parseFloat(document.getElementById("irrInvest").value);
+let exit = parseFloat(document.getElementById("irrExit").value);
+let years = parseFloat(document.getElementById("irrYears").value);
+
+let irr = Math.pow(exit/invest,1/years)-1;
+
+document.getElementById("irrResult").innerText =
+"IRR: " + (irr*100).toFixed(2) + "%";
+
+}
+
+</script>
+
+</body>
+</html>

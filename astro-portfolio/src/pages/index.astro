@@ -15,7 +15,7 @@
 
     header {
         background: #0b0b0b;
-        padding: 10px 50px;
+        padding: 20px 50px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -29,17 +29,11 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         letter-spacing: 2px;
-        display: none;
-    }
-
-    nav {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
     }
 
     nav a {
-
+    display: inline-block;
+    margin-left: 25px;
     padding: 6px 22px;
     font-size:0.9em;
     letter-spacing:0.5px;
@@ -65,7 +59,7 @@
 
 nav a:hover {
     border: 1px solid #d4af37;
-    background: linear-gradient(45deg, #d4af37, #f7e9a0);
+    background: linear-gradient(45deg, #00FF00, #f7e9a0);
     color: black;
     box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
     animation: none;
@@ -90,7 +84,7 @@ nav a:hover {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        text-align: left;
+        text-align: center;
         height: 90vh;
         padding: 0 20px;
         background: linear-gradient(to bottom, #0b0b0b, #141414);
@@ -99,7 +93,7 @@ nav a:hover {
 
     .hero h2 {
         font-family: 'Playfair Display', serif;
-        font-size: 45px;
+        font-size: 3.5em;
         margin-bottom: 15px;
         background: linear-gradient(45deg, #d4af37, #f7e9a0);
         -webkit-background-clip: text;
@@ -206,7 +200,9 @@ nav a:hover {
 
 <section class="hero">
     <h2>Hello, I'm Pranav</h2>
-    <p>I enjoy building things whether financial models, websites, applications, or meaningful connections. I’m always enthusiastic about exploring new opportunities.</p>
+    <p>I create premium, high-impact digital experiences with a perfect blend of design elegance and technical precision.</p>
+    <button class="btn" id="viewWorkBtn">View My Work</button>
+<p id="viewMessage" style="display:none; margin-top:15px; font-size:1.1em; font-family:'Playfair Display', serif;"></p>
 </section>
 
 <section class="section" id="about">
@@ -217,24 +213,6 @@ nav a:hover {
 <section class="section" id="projects">
     <h3>Projects</h3>
     <p>From luxury brand websites to cutting-edge web applications, my portfolio showcases projects that embody elegance, innovation, and functionality. Every pixel is intentional, every interaction smooth.</p>
-
-    <button class="btn" onclick="toggleProjects()" style="margin-top:40px;">View Detailed Projects</button>
-    
-    <div id="projectMenu" style="display:none; margin-top:35px;">
-        
-        <a href="models.html" class="btn" style="display:block; margin:10px auto; width:250px;">
-            Financial Models Lab
-        </a>
-    
-        <a href="website-project.html" class="btn" style="display:block; margin:10px auto; width:250px;">
-            Portfolio Website
-        </a>
-    
-        <a href="app-project.html" class="btn" style="display:block; margin:10px auto; width:250px;">
-            Web Application
-        </a>
-    
-    </div>
 </section>
 
 <section class="section" id="contact">
@@ -243,36 +221,18 @@ nav a:hover {
 </section>
 
 <footer>
-© 2025 Pranav | All Rights Reserved
+    © 2025 Pranav | All Rights Reserved
 </footer>
-
 <script>
 document.getElementById("viewWorkBtn").addEventListener("click", function() {
     const msg = document.getElementById("viewMessage");
-    msg.textContent = "✨ Scroll down to explore my work";
+    msg.textContent = "✨ Continue scrolling to view my work";
     msg.style.display = "block";
     msg.classList.remove("fadeInGold"); // reset animation if clicked again
 
     void msg.offsetWidth; // trick to restart animation
     msg.classList.add("fadeInGold");
 });
-
-function showProjects() {
-    const list = document.getElementById("projectList");
-    list.style.display = "block";
-}
-function toggleProjects() {
-
-let menu = document.getElementById("projectMenu");
-
-if(menu.style.display === "none"){
-menu.style.display = "block";
-}else{
-menu.style.display = "none";
-}
-
-}
 </script>
-
 </body>
 </html>
