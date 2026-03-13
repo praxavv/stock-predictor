@@ -47,7 +47,6 @@ stages {
             }
         }
         steps {
-            sh 'pip install pytest'
             sh 'pytest test.py || true'
         }
     }
