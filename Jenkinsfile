@@ -35,7 +35,6 @@ stages {
             }
         }
         steps {
-            sh 'pip install flake8'
             sh 'flake8 . --count --show-source --statistics || true'
         }
     }
