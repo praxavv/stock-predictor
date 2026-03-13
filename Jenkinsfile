@@ -1,7 +1,6 @@
 pipeline {
 agent any
 
-```
 environment {
     DOCKER_IMAGE_NAME = "sp"
     DOCKER_TAG = "${env.BUILD_ID}"
@@ -79,6 +78,5 @@ post {
         echo "Pipeline execution finished."
     }
 }
-```
 
 }
