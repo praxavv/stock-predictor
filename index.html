@@ -29,7 +29,7 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         letter-spacing: 2px;
-        display: none;
+        display: block;
     }
 
     nav {
@@ -61,14 +61,6 @@
 
     /* angled edges */
     clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0% 50%);
-}
-
-nav a:hover {
-    border: 1px solid #d4af37;
-    background: linear-gradient(45deg, #d4af37, #f7e9a0);
-    color: black;
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
-    animation: none;
 }
 
 nav a:hover {
@@ -172,24 +164,24 @@ nav a:hover {
     @keyframes fadeInUp {
         from {opacity: 0; transform: translateY(20px);}
         to {opacity: 1; transform: translateY(0);}
+    }
         
-        @keyframes fadeBlackToGold {
-    0% {
-        opacity: 0;
-        color: black;
+    @keyframes fadeBlackToGold {
+        0% {
+            opacity: 0;
+            color: black;
+        }
+        50% {
+            opacity: 1;
+            color: #555; /* mid transition */
+        }
+        100% {
+            color: #d4af37;
+        }
     }
-    50% {
-        opacity: 1;
-        color: #555; /* mid transition */
-    }
-    100% {
-        color: #d4af37;
-    }
-}
 
-#viewMessage.fadeInGold {
-    animation: fadeBlackToGold 5s ease forwards;
-}
+    #viewMessage.fadeInGold {
+        animation: fadeBlackToGold 5s ease forwards;
     }
 </style>
 </head>
@@ -218,20 +210,20 @@ nav a:hover {
     <h3>Projects</h3>
     <p>From luxury brand websites to cutting-edge web applications, my portfolio showcases projects that embody elegance, innovation, and functionality. Every pixel is intentional, every interaction smooth.</p>
 
-    <button class="btn" onclick="toggleProjects()" style="margin-top:40px;">View Detailed Projects</button>
+    <button class="btn" id="toggleProjectsBtn" onclick="toggleProjects()" style="margin-top:40px;">View Detailed Projects</button>
     
     <div id="projectMenu" style="display:none; margin-top:35px;">
         
-        <a href="models.html" class="btn" style="display:block; margin:10px auto; width:250px;">
+        <a href="models.html" class="btn" style="display:block; margin:10px auto; width:250px; text-decoration:none;">
             Financial Models Lab
         </a>
     
-        <a href="website-project.html" class="btn" style="display:block; margin:10px auto; width:250px;">
-            Portfolio Website
+        <a href="https://lourichprofessional.in/" target="_blank" class="btn" style="display:block; margin:10px auto; width:250px; text-decoration:none;">
+            Official Business Website
         </a>
     
-        <a href="app-project.html" class="btn" style="display:block; margin:10px auto; width:250px;">
-            Web Application
+        <a href="https://stock-predictor-obhdhprcimawickeczjpda.streamlit.app/" class="btn" style="display:block; margin:10px auto; width:300px; text-decoration:none;">
+            Quant - A Machine Learning app
         </a>
     
     </div>
@@ -247,31 +239,20 @@ nav a:hover {
 </footer>
 
 <script>
-document.getElementById("viewWorkBtn").addEventListener("click", function() {
-    const msg = document.getElementById("viewMessage");
-    msg.textContent = "✨ Scroll down to explore my work";
-    msg.style.display = "block";
-    msg.classList.remove("fadeInGold"); // reset animation if clicked again
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleProjectsBtn = document.getElementById('toggleProjectsBtn');
+    const projectMenu = document.getElementById('projectMenu');
 
-    void msg.offsetWidth; // trick to restart animation
-    msg.classList.add("fadeInGold");
+    if (toggleProjectsBtn && projectMenu) {
+        toggleProjectsBtn.addEventListener('click', function() {
+            if (projectMenu.style.display === 'none') {
+                projectMenu.style.display = 'block';
+            } else {
+                projectMenu.style.display = 'none';
+            }
+        });
+    }
 });
-
-function showProjects() {
-    const list = document.getElementById("projectList");
-    list.style.display = "block";
-}
-function toggleProjects() {
-
-let menu = document.getElementById("projectMenu");
-
-if(menu.style.display === "none"){
-menu.style.display = "block";
-}else{
-menu.style.display = "none";
-}
-
-}
 </script>
 
 </body>
