@@ -1,4 +1,4 @@
-# 📈 Stock Predictor (Streamlit App)
+# 📈 Stock Predictor (Streamlit App) - Testing
 
 A simple, lightweight Streamlit app that lets you fetch stock data, engineer features, visualize price trends, and run a **Random Forest Regressor** to predict future prices.
 Supports **Indian & US stock tickers**.
