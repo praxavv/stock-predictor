@@ -1,8 +1,5 @@
-// Declarative Jenkinsfile for a Python project with Docker.
-// This pipeline assumes that the Jenkins agent executing it has Docker installed.
-
 pipeline {
-    agent any
+agent any
 
     environment {
         DOCKER_IMAGE_NAME = "sp"
@@ -63,6 +60,94 @@ pipeline {
     post {
         always {
             echo 'Pipeline execution finished.'
+
+triggers {
+        githubPush()
+    }
+
+environment {
+    DOCKER_IMAGE_NAME = "sp"
+    DOCKER_TAG = "${env.BUILD_ID}"
+}
+
+stages {
+
+    stage('Checkout') {
+        steps {
+            checkout scm
         }
     }
+
+    stage('Build Docker Image') {
+        steps {
+            script {
+                echo "Building Docker image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
+                docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}", ".")
+            }
+ bbcf139 (update pipeline)
+        }
+    }
+
+    stage('Linting') {
+        agent {
+            docker {
+                image "${DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
+                reuseNode true
+            }
+        }
+        steps {
+            sh 'pip install flake8'
+            sh 'flake8 . --count --show-source --statistics'
+        }
+    }
+
+    stage('Testing') {
+        agent {
+            docker {
+                image "${DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
+                reuseNode true
+            }
+        }
+        steps {
+            sh 'pip install pytest'
+            sh 'pytest test.py'
+        }
+    }
+
+    stage('Push Docker Image') {
+        steps {
+            script {
+                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
+                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}").push()
+                    docker.image("${DOCKER_IMAGE_NAME}:${DOCKER_TAG}").push("latest")
+                }
+            }
+        }
+    }
+
+    stage('Deploy Application') {
+        steps {
+            echo "Deploying application using docker-compose..."
+            sh 'docker-compose down || true'
+            sh 'docker-compose up -d --build'
+        }
+    }
+
+}
+
+post {
+    success {
+        echo "Pipeline completed successfully 🚀"
+    }
+
+    failure {
+        echo "Pipeline failed ❌"
+    }
+
+    always {
+        echo "Cleaning workspace..."
+        cleanWs()
+    }
+}
+
 }
