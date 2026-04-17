@@ -1,138 +1,44 @@
-# 📈 Stock Predictor (Streamlit App) - Testing
+# 📈 AlphaStream | Institutional-Grade Stock Intelligence
 
-A simple, lightweight Streamlit app that lets you fetch stock data, engineer features, visualize price trends, and run a **Random Forest Regressor** to predict future prices.
-Supports **Indian & US stock tickers**.
+AlphaStream is a high-performance stock market analysis and strategy validation platform designed for quantitative analysts and institutional-grade traders. Built with a modular, scalable architecture, it provides real-time alpha generation, advanced technical analysis, and robust risk auditing.
 
----
+## 💎 Core Capabilities
 
-## 🚀 Features
+- **Alpha Generation Engine**: Leverages Random Forest machine learning to predict next-day price direction with confidence scoring.
+- **Deep Technical Analysis**: Interactive Plotly-based charting with 10+ standard technical indicators (MAs, RSI, MACD, Bollinger Bands).
+- **Strategy Backtester**: Professional-grade backtesting engine calculating Sharpe Ratio, Max Drawdown, Win Rate, and Annualized Volatility.
+- **Multi-Market Support**: Built-in support for US (NASDAQ/NYSE) and Indian (NSE) market segments.
+- **High-Fidelity UI**: Dark-themed, VC-ready interface optimized for clarity and rapid insight.
 
-### ✅ Stock Data Fetching
+## 🏗 Architecture
 
-* Uses **yfinance** for historical data
-* Automatically cleans + adjusts stock prices
-* Supports flexible `period` and `interval` selection
+The platform follows a clean, decoupled architecture:
 
-### ✅ Feature Engineering
+- `app.py`: Main orchestration and entry point.
+- `src/data/`: High-performance data fetching layer with memory-efficient caching.
+- `src/indicators/`: Modular technical analysis and metric calculation.
+- `src/models/`: Machine learning models for alpha prediction.
+- `src/backtest/`: Quantitative strategy simulation and risk engine.
+- `src/ui/`: Standardized component library and professional visualizations.
 
-* Uses custom feature functions from `features.py` (MA, RSI, etc.)
-* Automatically merges engineered features into the dataset
+## 🚀 Getting Started
 
-### ✅ Machine Learning
+1.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-* Random Forest Regressor for prediction
-* Automatic train/test split
-* Predicts future closing prices
+2.  **Launch the Platform**:
+    ```bash
+    streamlit run app.py
+    ```
 
-### ✅ Visualizations
+## 🧪 Tech Stack
 
-* Candlestick chart using **Plotly**
-* Trendlines and predictions
-* Streamlit UI with real-time inputs
-
----
-
-## 📂 Project Structure
-
-```
-sp/
-├── base.py
-├── core.py
-├── features.py
-├── stock.py
-├── pages/
-│   └── charts.py
-├── myenv/ (virtual environment)
-└── README.md
-```
+- **Frontend**: [Streamlit](https://streamlit.io/)
+- **Data Engine**: [Pandas](https://pandas.pydata.org/), [yfinance](https://github.com/ranaroussi/yfinance)
+- **Visuals**: [Plotly](https://plotly.com/python/)
+- **Machine Learning**: [Scikit-learn](https://scikit-learn.org/)
 
 ---
-
-## 🛠️ Setup Instructions
-
-### **1️⃣ Clone the repository**
-
-```bash
-git clone https://github.com/praxavv/stock-predictor.git
-cd stock-predictor
-```
-
----
-
-### **2️⃣ Create a virtual environment**
-
-Linux/macOS:
-
-```bash
-python3 -m venv myenv
-source myenv/bin/activate
-```
-
-Windows:
-
-```bash
-python -m venv myenv
-myenv\Scripts\activate
-```
-
----
-
-### **3️⃣ Install dependencies**
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-### **4️⃣ Run the Streamlit App**
-
-```bash
-streamlit run stock.py
-```
-
-This will open the app in your browser automatically.
-
----
-
-## 🧠 How It Works
-
-### **📦 core.py**
-
-* Downloads stock data
-* Cleans + formats it
-* Contains Random Forest training logic
-
-### **📦 features.py**
-
-* Technical indicators
-* Moving Averages
-* Momentum indicators
-* Trend features
-
-### **📦 stock.py**
-
-* Main Streamlit UI
-* Input fields + charts + predictions
-
-### **📦 pages/charts.py**
-
-* Dedicated charting page
-* Comparison plots + candlesticks
-
----
-
-## 📌 Example Tickers
-
-| Exchange  | Example Tickers                    |
-| --------- | ---------------------------------- |
-| NSE India | `TCS.NS`, `RELIANCE.NS`, `INFY.NS` |
-| US Stocks | `AAPL`, `MSFT`, `AMZN`             |
-
----
-
-## 📄 License
-
-MIT License — free to use, modify, distribute.
-
-
+*Developed for excellence in financial technology.*
