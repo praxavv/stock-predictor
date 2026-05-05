@@ -14,12 +14,12 @@ AlphaStream is a high-performance stock market analysis and strategy validation 
 
 The platform follows a clean, decoupled architecture:
 
-- `app.py`: Main orchestration and entry point.
-- `src/data/`: High-performance data fetching layer with memory-efficient caching.
-- `src/indicators/`: Modular technical analysis and metric calculation.
-- `src/models/`: Machine learning models for alpha prediction.
-- `src/backtest/`: Quantitative strategy simulation and risk engine.
-- `src/ui/`: Standardized component library and professional visualizations.
+- `app/app.py`: Main orchestration and entry point.
+- `app/pages/`: Modular dashboard views.
+- `app/components/`: Standardized component library and professional visualizations.
+- `core/analytics/`: High-performance data fetching, technical analysis, and backtesting.
+- `core/prediction/`: Machine learning models for alpha prediction.
+- `deployment/`: Containerization and CI/CD configurations.
 
 ## 🚀 Getting Started
 
@@ -30,7 +30,12 @@ The platform follows a clean, decoupled architecture:
 
 2.  **Launch the Platform**:
     ```bash
-    streamlit run app.py
+    streamlit run app/app.py
+    ```
+
+3.  **Run with Docker**:
+    ```bash
+    docker-compose -f deployment/docker-compose.yml up --build
     ```
 
 ## 🧪 Tech Stack

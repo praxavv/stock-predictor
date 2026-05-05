@@ -1,10 +1,15 @@
+import sys
+import os
+root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(root_dir)
+sys.path.append(os.path.join(root_dir, "app"))
 import streamlit as st
 import pandas as pd
-from src.data.data_service import get_stock_data
-from src.indicators.technical import calculate_technical_indicators, get_latest_metrics
-from src.models.predictor import train_alpha_model, predict_signal
-from src.ui.components import render_sidebar, render_metric_cards
-from src.config import MARKET_SEGMENTS, COLOR_PALETTE
+from core.analytics.data_service import get_stock_data
+from core.analytics.technical import calculate_technical_indicators, get_latest_metrics
+from core.prediction.predictor import train_alpha_model, predict_signal
+from components.components import render_sidebar, render_metric_cards
+from core.config import MARKET_SEGMENTS, COLOR_PALETTE
 
 st.set_page_config(page_title="AlphaStream | Dashboard", layout="wide")
 

@@ -22,7 +22,7 @@ stages {
         steps {
             script {
                 echo "Building Docker image: ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}"
-                sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} ."
+                sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_TAG} -f deployment/Dockerfile ."
             }
         }
     }

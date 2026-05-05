@@ -1,9 +1,14 @@
+import sys
+import os
+root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(root_dir)
+sys.path.append(os.path.join(root_dir, "app"))
 import streamlit as st
-from src.data.data_service import get_stock_data
-from src.indicators.technical import calculate_technical_indicators
-from src.backtest.engine import backtest_strategy
-from src.ui.components import render_sidebar, render_backtest_report
-from src.ui.charts import plot_backtest_performance
+from core.analytics.data_service import get_stock_data
+from core.analytics.technical import calculate_technical_indicators
+from core.analytics.engine import backtest_strategy
+from components.components import render_sidebar, render_backtest_report
+from components.charts import plot_backtest_performance
 
 st.set_page_config(page_title="AlphaStream | Backtester", layout="wide")
 

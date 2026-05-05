@@ -1,6 +1,14 @@
 import streamlit as st
-from src.config import APP_TITLE, APP_ICON
-from src.ui.components import render_sidebar
+import sys
+import os
+
+# Add the project root and app directory to the python path
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(root_dir)
+sys.path.append(os.path.join(root_dir, 'app'))
+
+from core.config import APP_TITLE, APP_ICON
+from components.components import render_sidebar
 
 # Page Configuration
 st.set_page_config(

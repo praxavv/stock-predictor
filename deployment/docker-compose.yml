@@ -14,7 +14,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   app:
-    build: .
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
     container_name: sp_app
     depends_on:
       - db
@@ -23,7 +25,7 @@ services:
     environment:
       DATABASE_URL: postgres://spuser:sppass@db:5432/spdb
     volumes:
-      - .:/app        # optional: live reload for development
+      - ..:/app        # optional: live reload for development
 
 volumes:
   postgres_data:

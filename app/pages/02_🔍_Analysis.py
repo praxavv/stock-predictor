@@ -1,8 +1,13 @@
+import sys
+import os
+root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(root_dir)
+sys.path.append(os.path.join(root_dir, "app"))
 import streamlit as st
-from src.data.data_service import get_stock_data
-from src.indicators.technical import calculate_technical_indicators
-from src.ui.components import render_sidebar
-from src.ui.charts import plot_main_price_chart, plot_rsi
+from core.analytics.data_service import get_stock_data
+from core.analytics.technical import calculate_technical_indicators
+from components.components import render_sidebar
+from components.charts import plot_main_price_chart, plot_rsi
 
 st.set_page_config(page_title="AlphaStream | Analysis", layout="wide")
 

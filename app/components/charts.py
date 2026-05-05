@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
-from src.config import CHART_THEME, COLOR_PALETTE
+from core.config import CHART_THEME, COLOR_PALETTE
 
 def plot_main_price_chart(data: pd.DataFrame, ticker: str) -> go.Figure:
     """Create a professional candlestick chart with indicators."""

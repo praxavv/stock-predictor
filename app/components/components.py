@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from typing import Dict
-from src.config import COLOR_PALETTE
+from core.config import COLOR_PALETTE
 
 def render_metric_cards(metrics: Dict):
     """Render professional KPI cards."""
@@ -22,20 +22,23 @@ def render_metric_cards(metrics: Dict):
 
 def render_sidebar():
     """Consistent sidebar with branding and ticker selection."""
+    
     with st.sidebar:
-        st.image("https://via.placeholder.com/150x50/0E1117/00FFA3?text=AlphaStream", use_column_width=True)
-        st.markdown("---")
-        
-        market = st.selectbox("Market Segment", ["USA", "INDIA"])
-        
-        from src.config import MARKET_SEGMENTS
+        market = st.selectbox(
+            "Market Segment",
+            ["USA", "INDIA"]
+        )
+        from core.config import MARKET_SEGMENTS
         tickers = MARKET_SEGMENTS[market]
-        
-        ticker = st.selectbox("Select Ticker", tickers)
-        
+        ticker = st.selectbox(
+            "Select Ticker",
+            tickers
+        )
         st.markdown("---")
-        st.info("AlphaStream uses real-time market data to generate high-conviction signals.")
-        
+        st.info(
+            "AlphaStream uses real-time market data "
+            "to generate high-conviction signals."
+        )
         return ticker, market
 
 def render_backtest_report(metrics: Dict):
