@@ -48,30 +48,40 @@ def main():
     render_sidebar()
 
     # Home Page Content
-    st.title(f"{APP_ICON} {APP_TITLE}")
-    st.subheader("Next-Generation Alpha Generation & Risk Management")
+    st.title(f"Pranav's Analysis Lab")
+    st.subheader("Next-Gen Alpha Generation & Risk Management")
     
     st.markdown("""
-    Welcome to **AlphaStream**, the premier destination for institutional-grade stock market analysis. 
-    Our platform leverages advanced machine learning, robust technical indicators, and comprehensive 
-    backtesting engines to provide you with a competitive edge in the markets.
+    
+    *A personal research environment for stock market intelligence, quantitative finance, and strategic analysis.*
+    
+    This workspace is built to explore markets through data, logic, and experimentation. Combining technical analysis, financial modeling, machine learning signals, and backtesting into one analytical lab.
+    
+    Whether studying Indian equities, analyzing US markets, testing strategies, or building valuation models, the objective remains simple:
+    
+    > Find clarity through data. Build conviction through analysis.
     
     ---
     
-    ### 🚀 Getting Started
+    ### 🚀 Explore the Lab
     
-    Select a module from the sidebar to begin your analysis:
-    
-    1.  **📈 Dashboard**: Real-time signals and market sentiment overview.
-    2.  **🔍 Deep Analysis**: Interactive charting with technical overlays.
-    3.  **🧪 Backtester**: Strategy validation and risk metric auditing.
+    1. **📊 Dashboard** — Monitor market trends, sentiment, and live analytical signals.
+    2. **🔍 Deep Analysis** — Interactive technical analysis with indicators and chart overlays.
+    3. **🧪 Backtester** — Evaluate trading strategies with historical simulations and risk metrics.
+    4. **🤖 Quant Research** — Experimental models and data-driven market insights.
     
     ---
     
-    ### 💎 Key Features
-    - **Alpha Prediction Engine**: Powered by Random Forest classification to detect high-conviction entry points.
-    - **Institutional Risk Metrics**: Evaluate strategies using Sharpe, Sortino, and Max Drawdown.
-    - **Multi-Market Support**: Seamlessly transition between Indian (NSE) and US (NASDAQ/NYSE) markets.
+    ### 💡 Core Philosophy
+    
+    - Data over hype
+    - Systems over emotion
+    - Consistency over prediction
+    - Learning through experimentation
+    
+    ---
+    
+    *Built independently by Pranav as an evolving financial research and analysis workspace.*
     """)
 
     # High-level Market Recap (Optional - Placeholder for now)

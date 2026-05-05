@@ -14,7 +14,7 @@ st.set_page_config(page_title="AlphaStream | Analysis", layout="wide")
 def main():
     ticker, market = render_sidebar()
     
-    st.title("🔍 Interactive Technical Analysis")
+    st.title("🔍 Technical Analysis")
     st.caption(f"Deep-dive charting for {ticker} ({market})")
     
     # 1. Timeline Selection

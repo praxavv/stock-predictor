@@ -15,7 +15,7 @@ st.set_page_config(page_title="AlphaStream | Backtester", layout="wide")
 def main():
     ticker, market = render_sidebar()
     
-    st.title("🧪 Institutional Backtesting Engine")
+    st.title("🧪 Backtesting Engine")
     st.caption(f"Strategy validation and risk auditing for {ticker} ({market})")
     
     # 1. Backtest Settings

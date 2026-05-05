@@ -22,24 +22,54 @@ def render_metric_cards(metrics: Dict):
 
 def render_sidebar():
     """Consistent sidebar with branding and ticker selection."""
-    
+
+    import streamlit as st
+    from core.config import MARKET_SEGMENTS
+
+    # Initialize defaults only once
+    if "market" not in st.session_state:
+        st.session_state.market = "USA"
+
+    if "ticker" not in st.session_state:
+        st.session_state.ticker = MARKET_SEGMENTS["USA"][0]
+
     with st.sidebar:
-        market = st.selectbox(
+
+        # MARKET SELECTBOX
+        market_options = ["USA", "INDIA"]
+
+        selected_market = st.selectbox(
             "Market Segment",
-            ["USA", "INDIA"]
+            market_options,
+            index=market_options.index(st.session_state.market)
         )
-        from core.config import MARKET_SEGMENTS
-        tickers = MARKET_SEGMENTS[market]
-        ticker = st.selectbox(
+
+        st.session_state.market = selected_market
+
+        # TICKERS FOR MARKET
+        tickers = MARKET_SEGMENTS[selected_market]
+
+        # Prevent invalid ticker after market switch
+        if st.session_state.ticker not in tickers:
+            st.session_state.ticker = tickers[0]
+
+        # TICKER SELECTBOX
+        selected_ticker = st.selectbox(
             "Select Ticker",
-            tickers
+            tickers,
+            index=tickers.index(st.session_state.ticker)
         )
+
+        st.session_state.ticker = selected_ticker
+
         st.markdown("---")
+
         st.info(
-            "AlphaStream uses real-time market data "
-            "to generate high-conviction signals."
+            "Pranav's Analysis Lab uses real-time market data "
+            "to generate analytical insights and trading signals."
         )
-        return ticker, market
+
+    return st.session_state.ticker, st.session_state.market
 
 def render_backtest_report(metrics: Dict):
     """Formatted report for strategy backtesting."""
