@@ -15,8 +15,8 @@ MARKET_SEGMENTS = {
 
 # -------------------- UI CONFIG --------------------
 
-APP_TITLE = "AlphaStream | Pro Stock Intelligence"
-APP_ICON = "📈"
+APP_TITLE = "Pranav's Lab"
+APP_ICON = "🧪"
 
 CHART_THEME = "plotly_dark"
 COLOR_PALETTE = {
@@ -28,7 +28,7 @@ COLOR_PALETTE = {
 
 # -------------------- ANALYTICS CONFIG --------------------
 
-DEFAULT_PERIOD = "1y"
+DEFAULT_PERIOD = "1mo"
 DEFAULT_INTERVAL = "1d"
 RSI_PERIOD = 14
 MA_SHORT = 20
