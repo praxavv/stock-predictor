@@ -10,8 +10,9 @@ from core.analytics.technical import calculate_technical_indicators, get_latest_
 from core.prediction.predictor import train_alpha_model, predict_signal
 from components.components import render_sidebar, render_metric_cards
 from core.config import MARKET_SEGMENTS, COLOR_PALETTE
+from core.ai_engine import ask_ai
 
-st.set_page_config(page_title="AlphaStream | Dashboard", layout="wide")
+st.set_page_config(page_title="Pranav's Lab", layout="wide")
 
 def main():
     ticker, market = render_sidebar()
@@ -41,6 +42,7 @@ def main():
         with st.spinner("Training Alpha Model..."):
             model, model_info = train_alpha_model(data)
             prediction = predict_signal(model, data)
+  
             
         # Prediction Card
         confidence_color = "green" if prediction['confidence'] > 0.6 else "orange"
@@ -53,6 +55,24 @@ def main():
         """, unsafe_allow_html=True)
         
         st.caption(f"Model accuracy: {model_info['accuracy']*100:.1f}% based on historical patterns.")
+
+        st.markdown("---")
+        st.subheader("🤖 AI Quick Insights")
+        
+        ai_context = {
+            "ticker": ticker,
+            "market": market,
+            "latest_price": round(latest_metrics['price'], 2),
+            "rsi": round(latest_metrics['rsi'], 2),
+            "ma50": round(latest_metrics['ma50'], 2),
+            "signal": prediction['signal'],
+            "confidence": round(prediction['confidence'], 2),
+            "model_accuracy": round(model_info['accuracy'] * 100, 2)
+        }
+        
+        with st.spinner("AI Analysis in progress..."):
+            ai_commentary = ask_ai(ai_context)
+            st.info(ai_commentary)
         
     with col2:
         st.subheader("Market Sentiment & Signals")

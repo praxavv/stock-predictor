@@ -9,7 +9,7 @@ from core.analytics.technical import calculate_technical_indicators
 from components.components import render_sidebar
 from components.charts import plot_main_price_chart, plot_rsi
 
-st.set_page_config(page_title="AlphaStream | Analysis", layout="wide")
+st.set_page_config(page_title="Pranav's Lab", layout="wide")
 
 def main():
     ticker, market = render_sidebar()

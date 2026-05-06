@@ -7,41 +7,36 @@ def ask_ai(context):
     )
 
     prompt = f"""
-You are a financial analysis engine.
-
-Rules:
-- Do not explain.
-- Do not give advice.
-- Use ONLY provided data.
-- Maximum 25 words.
-
-Output format:
-Trend: <Bullish/Bearish/Neutral>
-Momentum: <Improving/Worsening/Stable>
-Risk: <High/Medium/Low>
-
-Data:
-{formatted_context}
-
-Response:
-"""
+    You are a financial market classifier.
+    
+    Example:
+    
+    Trend: Bullish
+    Momentum: Improving
+    Risk: Medium
+    
+    Now analyze this market data:
+    
+    {formatted_context}
+    
+    Answer:
+    """
 
     try:
         response = requests.post(
             "http://localhost:11434/api/generate",
             json={
-                "model": "tinyllama",
+                "model": "gemma:2b",
                 "prompt": prompt,
                 "stream": False,
                 "options": {
-                    "temperature": 0.1,
-                    "top_p": 0.5,
-                    "num_predict": 40,
-                    "repeat_penalty": 1.2,
-                    "stop": ["\n\n", "Data:", "Rules:"]
+                    "temperature": 0.2,
+                    "top_p": 0.9,
+                    "num_predict": 60,
+                    "repeat_penalty": 1.1,
                 }
             },
-            timeout=15
+            timeout=60
         )
 
         response.raise_for_status()

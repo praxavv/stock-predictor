@@ -10,7 +10,7 @@ from core.analytics.engine import backtest_strategy
 from components.components import render_sidebar, render_backtest_report
 from components.charts import plot_backtest_performance
 
-st.set_page_config(page_title="AlphaStream | Backtester", layout="wide")
+st.set_page_config(page_title="Pranav's Lab", layout="wide")
 
 def main():
     ticker, market = render_sidebar()

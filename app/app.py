@@ -12,8 +12,8 @@ from components.components import render_sidebar
 
 # Page Configuration
 st.set_page_config(
-    page_title=APP_TITLE,
-    page_icon=APP_ICON,
+    page_title="Pranav's Lab",
+    page_icon="🧪",
     layout="wide",
     initial_sidebar_state="expanded",
 )
