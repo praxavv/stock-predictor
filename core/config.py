@@ -3,14 +3,35 @@ import streamlit as st
 # -------------------- MARKET CONFIG --------------------
 
 MARKET_SEGMENTS = {
-    "INDIA": [
-        "RELIANCE.NS", "TCS.NS", "HDFCBANK.NS", "ICICIBANK.NS", "INFY.NS",
-        "HINDUNILVR.NS", "ITC.NS", "SBIN.NS", "BHARTIARTL.NS", "KOTAKBANK.NS"
-    ],
-    "USA": [
-        "AAPL", "MSFT", "GOOGL", "AMZN", "META",
-        "TSLA", "NVDA", "BRK-B", "JPM", "V"
-    ]
+    "USA": {
+        "Technology": [
+            "AAPL", "MSFT", "NVDA", "AMD", "GOOGL"
+        ],
+        "Finance": [
+            "JPM", "BAC", "GS", "V", "MA"
+        ],
+        "Consumer": [
+            "AMZN", "WMT", "COST", "KO"
+        ],
+        "EV & Auto": [
+            "TSLA", "F"
+        ]
+    },
+
+    "INDIA": {
+        "IT": [
+            "TCS.NS", "INFY.NS", "WIPRO.NS"
+        ],
+        "Banking": [
+            "HDFCBANK.NS", "ICICIBANK.NS", "SBIN.NS"
+        ],
+        "Energy": [
+            "RELIANCE.NS", "ONGC.NS"
+        ],
+        "Consumer": [
+            "HINDUNILVR.NS", "ITC.NS"
+        ]
+    }
 }
 
 # -------------------- UI CONFIG --------------------

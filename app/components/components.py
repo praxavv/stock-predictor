@@ -31,12 +31,15 @@ def render_sidebar():
         st.session_state.market = "USA"
 
     if "ticker" not in st.session_state:
-        st.session_state.ticker = MARKET_SEGMENTS["USA"][0]
+        # Flatten tickers to get the first one for default
+        first_market = MARKET_SEGMENTS["USA"]
+        all_usa_tickers = [ticker for sector in first_market.values() for ticker in sector]
+        st.session_state.ticker = all_usa_tickers[0]
 
     with st.sidebar:
 
         # MARKET SELECTBOX
-        market_options = ["USA", "INDIA"]
+        market_options = list(MARKET_SEGMENTS.keys())
 
         selected_market = st.selectbox(
             "Market Segment",
@@ -46,8 +49,9 @@ def render_sidebar():
 
         st.session_state.market = selected_market
 
-        # TICKERS FOR MARKET
-        tickers = MARKET_SEGMENTS[selected_market]
+        # TICKERS FOR MARKET (Flattened)
+        market_data = MARKET_SEGMENTS[selected_market]
+        tickers = [ticker for sector in market_data.values() for ticker in sector]
 
         # Prevent invalid ticker after market switch
         if st.session_state.ticker not in tickers:
