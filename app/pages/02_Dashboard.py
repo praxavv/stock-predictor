@@ -68,13 +68,25 @@ def main():
     peer_data = []
     for p in peers:
         p_data = get_stock_data(p, period="5d")
-        if not p_data.empty:
-            change = (p_data['Close'].iloc[-1] / p_data['Close'].iloc[0]) - 1
-            peer_data.append({"Ticker": p, "Price": p_data['Close'].iloc[-1], "5D Change": f"{change*100:.2f}%"})
+        if len(p_data) >= 2:
+            latest_price = p_data['Close'].iloc[-1]
+            prev_price = p_data['Close'].iloc[-2]
+            change = (latest_price / prev_price) - 1
+            peer_data.append({"Ticker": p, "Price": latest_price, "Day Change": f"{change*100:.2f}%"})
     
     st.table(pd.DataFrame(peer_data))
 
-    st.subheader("Market Heatmap")
+    col_h1, col_h2 = st.columns([2, 1])
+    with col_h1:
+        st.subheader("Market Heatmap")
+    with col_h2:
+        size_metric = st.radio(
+            "Size Heatmap By:",
+            ["Market Cap", "Total Cash"],
+            horizontal=True,
+            label_visibility="collapsed"
+        )
+
     treemap_data = []
     
     # MARKET_SEGMENTS[market] is now a dictionary
@@ -99,14 +111,14 @@ def main():
         "GS": "Goldman Sachs"
     }
     
-    def format_market_cap(value):
+    def format_value(value):
         if value >= 1e12:
             return f"{value/1e12:.2f}T"
         elif value >= 1e9:
             return f"{value/1e9:.2f}B"
         elif value >= 1e6:
             return f"{value/1e6:.2f}M"
-        return str(value)
+        return f"{value:,.0f}"
     
     
     for sector, companies in MARKET_SEGMENTS[market].items():
@@ -115,27 +127,34 @@ def main():
     
             p_data = get_stock_data(p, period="5d")
     
-            if not p_data.empty:
+            if len(p_data) >= 2:
     
                 latest_price = p_data['Close'].iloc[-1]
-                first_price = p_data['Close'].iloc[0]
+                prev_price = p_data['Close'].iloc[-2]
     
-                change = ((latest_price / first_price) - 1) * 100
+                change = ((latest_price / prev_price) - 1) * 100
     
-                stock = yf.Ticker(p)
-                market_size = stock.info.get("marketCap", 0)
-    
-                formatted_market_size = format_market_cap(market_size)
+                # Use cached company info
+                from core.analytics.data_service import get_company_info
+                info = get_company_info(p)
+                
+                market_cap = info.get("marketCap", 0)
+                total_cash = info.get("totalCash", 0)
+                
+                # Select value based on toggle
+                display_value = market_cap if size_metric == "Market Cap" else total_cash
+                formatted_value = format_value(display_value)
 
-                company_name = COMPANY_NAMES.get(p, p)
+                company_name = COMPANY_NAMES.get(p, info.get("longName", p))
     
                 treemap_data.append({
                     "Country": market,
                     "Sector": sector,
                     "Company": company_name,
-                    "FormattedMarketCap": formatted_market_size,
-                    "MarketCap (millions)": round(market_size / 1_000_000, 2),
-                    "Change": change
+                    "FormattedValue": formatted_value,
+                    "Value (millions)": round(display_value / 1_000_000, 2),
+                    "Change": change,
+                    "Metric": size_metric
                 })
     
     treemap_df = pd.DataFrame(treemap_data)
@@ -148,7 +167,7 @@ def main():
             # Hierarchy
             path=["Country", "Sector", "Company"],
     
-            values="MarketCap (millions)",
+            values="Value (millions)",
     
             color="Change",
     
@@ -161,11 +180,11 @@ def main():
             color_continuous_midpoint=0,
     
             hover_data={
-                "MarketCap (millions)": ':.2f',
+                "Value (millions)": ':.2f',
                 "Change": ':.2f'
             },
 
-            custom_data=["FormattedMarketCap"],
+            custom_data=["FormattedValue", "Metric"],
         )
     
         fig.update_traces(
@@ -177,7 +196,7 @@ def main():
         
             hovertemplate="""
             <b>%{label}</b><br>
-            Market Size: %{customdata[0]}<br>
+            %{customdata[1]}: %{customdata[0]}<br>
             Change: %{color:.2f}%<br>
             <extra></extra>
             """

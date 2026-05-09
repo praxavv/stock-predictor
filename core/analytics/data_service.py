@@ -40,6 +40,25 @@ def get_stock_data(ticker: str, period: str = "1y", interval: str = "1d") -> pd.
         logger.error(f"Error fetching data for {ticker}: {str(e)}")
         return pd.DataFrame()
 
+@st.cache_data(ttl=86400, show_spinner="Fetching company financials...")
+def get_company_info(ticker_symbol: str) -> dict:
+    """
+    Fetch company information (Market Cap, Total Cash, etc.) with 24h caching.
+    """
+    try:
+        ticker = yf.Ticker(ticker_symbol)
+        info = ticker.info
+        return {
+            "marketCap": info.get("marketCap", 0),
+            "totalCash": info.get("totalCash", 0),
+            "longName": info.get("longName", ticker_symbol),
+            "sector": info.get("sector", "Unknown"),
+            "industry": info.get("industry", "Unknown")
+        }
+    except Exception as e:
+        logger.error(f"Error fetching info for {ticker_symbol}: {str(e)}")
+        return {}
+
 def validate_ticker(ticker: str) -> bool:
     """Check if a ticker exists and has recent data."""
     if not ticker:
