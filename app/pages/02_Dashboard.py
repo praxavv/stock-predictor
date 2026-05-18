@@ -207,7 +207,10 @@ def main():
 
     # Professional Market Status Header
     last_ts = data.index[-1]
-    is_recent = (pd.Timestamp.now() - last_ts).days < 3 # Rough check for weekend/closed
+    
+    # Ensure timezone consistency for comparison
+    now = pd.Timestamp.now(tz=last_ts.tzinfo) if last_ts.tzinfo else pd.Timestamp.now()
+    is_recent = (now - last_ts).days < 3 # Rough check for weekend/closed
     
     status_color = "#00FFA3" if is_recent else "#FFB800"
     status_text = "MARKET LIVE" if is_recent else "MARKET CLOSED / ARCHIVE"
