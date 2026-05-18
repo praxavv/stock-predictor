@@ -27,8 +27,11 @@ def main():
     with st.spinner("Analyzing market patterns..."):
         data = get_stock_data(ticker, period=period, interval=interval)
         if data.empty:
-            st.error("No data found.")
+            st.error(f"Could not retrieve data for {ticker}. Please try a different period or check back later.")
             return
+        
+        last_date = data.index[-1].strftime('%Y-%m-%d')
+        st.caption(f"📅 Latest Data Point: **{last_date}**")
         
         data = calculate_technical_indicators(data)
         

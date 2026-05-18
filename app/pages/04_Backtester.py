@@ -29,7 +29,7 @@ def main():
     with st.spinner("Simulating strategy..."):
         data = get_stock_data(ticker, period=period)
         if data.empty:
-            st.error("No data found.")
+            st.error(f"Insufficient data for {ticker} to run a {period} backtest. Please try a different ticker or period.")
             return
             
         data = calculate_technical_indicators(data)
