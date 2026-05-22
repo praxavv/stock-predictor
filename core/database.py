@@ -47,10 +47,20 @@ def get_user_data(username):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("SELECT balance FROM users WHERE username=?", (username,))
-    balance = c.fetchone()[0]
+    res = c.fetchone()
+    if not res:
+        conn.close()
+        return None
+    balance = res[0]
     c.execute("SELECT holdings, history FROM portfolios WHERE username=?", (username,))
     port = c.fetchone()
     conn.close()
+    if not port:
+        return {
+            "balance": balance,
+            "holdings": {},
+            "history": []
+        }
     return {
         "balance": balance,
         "holdings": json.loads(port[0]),
