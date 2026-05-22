@@ -49,15 +49,15 @@ def main():
 
     # Home Page Content
     st.title(f"Pranav's Analysis Lab")
-    st.subheader("Next-Gen Alpha Generation & Risk Management")
+    st.subheader("Built for research and experimental purposes.")
     
     st.markdown("""
     
-    *A personal research environment for stock market intelligence, quantitative finance, and strategic analysis.*
+    *A personal research environment for stock market intelligence, quantitative finance and strategic analysis.*
     
-    This workspace is built to explore markets through data, logic, and experimentation. Combining technical analysis, financial modeling, machine learning signals, and backtesting into one analytical lab.
+    This workspace is built to explore markets through data, logic and experimentation. Combining technical analysis, financial modeling, machine learning signals and backtesting into one analytical lab.
     
-    Whether studying Indian equities, analyzing US markets, testing strategies, or building valuation models, the objective remains simple:
+    Whether studying Indian equities, analyzing US markets, testing strategies or building valuation models, the objective remains simple:
     
     > Find clarity through data. Build conviction through analysis.
     
@@ -65,7 +65,7 @@ def main():
     
     ### 🚀 Explore the Lab
     
-    1. **📊 Dashboard** — Monitor market trends, sentiment, and live analytical signals.
+    1. **📊 Dashboard** — Monitor market trends and trade using simulated money
     2. **🔍 Deep Analysis** — Interactive technical analysis with indicators and chart overlays.
     3. **🧪 Backtester** — Evaluate trading strategies with historical simulations and risk metrics.
     4. **🤖 Quant Research** — Experimental models and data-driven market insights.

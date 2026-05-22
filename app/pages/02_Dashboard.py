@@ -2,18 +2,20 @@ import sys
 import os
 import yfinance as yf
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(root_dir)
-sys.path.append(os.path.join(root_dir, "app"))
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
+if os.path.join(root_dir, "app") not in sys.path:
+    sys.path.insert(0, os.path.join(root_dir, "app"))
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
-from core.analytics.data_service import get_stock_data
+from core.analytics.data_service import get_stock_data, get_company_info
 from core.analytics.technical import calculate_technical_indicators, get_latest_metrics
 from core.prediction.predictor import train_alpha_model, predict_signal
 from components.components import render_sidebar, render_metric_cards, account_management_dialog
-from core.config import MARKET_SEGMENTS, COLOR_PALETTE
+from core.config import MARKET_SEGMENTS, COLOR_PALETTE, SECTOR_ORDER
 from core.ai_engine import ask_ai
 import core.database as db
 
@@ -37,7 +39,6 @@ def init_paper_trading():
         st.session_state.portfolio_history = pd.DataFrame(columns=["Timestamp", "TotalValue"])
 
 @st.cache_data(ttl=60)
-
 def get_live_price(ticker):
     try:
         data = yf.download(ticker, period="1d", interval="1m", progress=False)
@@ -193,24 +194,16 @@ def main():
     st.title("🚀 Market Intelligence Dashboard")
     st.caption(f"Real-time Alpha Generation for {ticker} ({market})")
     
-    # 1. Aggressive Data Fetch & Resiliency Logic
     data = get_stock_data(ticker)
-    
-    # If still empty, try an aggressive 1-year pull to ensure KPIs work
     if data.empty:
         data = get_stock_data(ticker, period="1y")
-
-    # If data is STILL empty after aggressive pull, show a professional 'Sync' state instead of a hard error
     if data.empty:
-        st.warning(f"📡 {ticker} Data Stream: Synchronizing... Please verify ticker symbol or check connection.")
+        st.warning(f"📡 {ticker} Data Stream: Synchronizing...")
         return
 
-    # Professional Market Status Header
     last_ts = data.index[-1]
-    
-    # Ensure timezone consistency for comparison
     now = pd.Timestamp.now(tz=last_ts.tzinfo) if last_ts.tzinfo else pd.Timestamp.now()
-    is_recent = (now - last_ts).days < 3 # Rough check for weekend/closed
+    is_recent = (now - last_ts).days < 3
     
     status_color = "#00FFA3" if is_recent else "#FFB800"
     status_text = "MARKET LIVE" if is_recent else "MARKET CLOSED / ARCHIVE"
@@ -225,15 +218,11 @@ def main():
 
     data = calculate_technical_indicators(data)
     latest_metrics = get_latest_metrics(data)
-    
-    # 2. Key Metrics Row
     render_metric_cards(latest_metrics, symbol=currency_symbol)
     
     st.markdown("---")
     
-    # 3. Alpha Prediction Engine
     col1, col2 = st.columns([1, 2])
-    
     with col1:
         st.subheader("Alpha Prediction")
         try:
@@ -241,7 +230,6 @@ def main():
                 model, model_info = train_alpha_model(data)
                 prediction = predict_signal(model, data)
       
-            # Prediction Card
             confidence_color = "green" if prediction['confidence'] > 0.6 else "orange"
             st.markdown(f"""
                 <div style="background-color: #161A23; padding: 20px; border-radius: 10px; border: 1px solid #1E2430;">
@@ -251,167 +239,114 @@ def main():
                 </div>
             """, unsafe_allow_html=True)
             st.caption(f"Confidence score based on {model_info['accuracy']*100:.1f}% historical backtest accuracy.")
-        except Exception as e:
+        except:
             st.info("Generating predictive signal... (Awaiting more data)")
 
-        
-    
-    # 4. Market Movers (Simplified)
     st.subheader("Institutional Market Movers")
-    # Flatten tickers from all sectors
-    all_tickers = [t for s in MARKET_SEGMENTS[market].values() for t in s]
-    peers = all_tickers[:5]
+    
+    movers_tickers = []
+    for sector_list in MARKET_SEGMENTS[market].values():
+        if sector_list: movers_tickers.append(sector_list[0])
+    
     peer_data = []
-    for p in peers:
-        try:
-            p_data = get_stock_data(p, period="5d")
-            if len(p_data) >= 2:
-                latest_price = p_data['Close'].iloc[-1]
-                prev_price = p_data['Close'].iloc[-2]
-                change = (latest_price / prev_price) - 1
-                peer_data.append({
-                    "Ticker": p, 
-                    f"Price ({currency_symbol})": f"{latest_price:,.2f}", 
-                    "Day Change": f"{change*100:.2f}%"
-                })
-        except:
-            continue
+    if movers_tickers:
+        movers_data = get_heatmap_data(movers_tickers)
+        for p in movers_tickers:
+            try:
+                if p in movers_data.columns.get_level_values(1):
+                    p_ts = movers_data.xs(p, axis=1, level=1).dropna()
+                    if len(p_ts) >= 2:
+                        lp = p_ts['Close'].iloc[-1]
+                        pp = p_ts['Close'].iloc[-2]
+                        chg = (lp / pp) - 1
+                        info = get_company_info(p)
+                        peer_data.append({
+                            "Ticker": p, 
+                            "Company": info.get("longName", p),
+                            f"Price ({currency_symbol})": f"{lp:,.2f}", 
+                            "Day Change": f"{chg*100:.2f}%"
+                        })
+            except: continue
     
     if peer_data:
         st.table(pd.DataFrame(peer_data))
     else:
         st.caption("Market movers temporarily unavailable.")
 
-    # 5. Paper Trading Simulator
     render_trading_terminal(ticker, currency_symbol)
 
-    # Compact Header & Toggle Row
+    # --- HEATMAP SECTION ---
     st.write("")
-    col_h1, col_h2 = st.columns([2, 1])
-    with col_h1:
-        st.markdown("#### Market Heatmap")
-    with col_h2:
-        size_metric = st.radio(
-            "Size Heatmap By:",
-            ["Market Value", "Cash value"],
-            horizontal=True,
-            label_visibility="collapsed"
-        )
-
-    treemap_data = []
+    col_title, col_toggle = st.columns([3, 1])
+    with col_title:
+        st.markdown("#### 📊 11 sectors Heatmap")
+    with col_toggle:
+        size_metric = st.selectbox("Size By:", ["Market Cap", "Cash Value"], label_visibility="collapsed")
     
-    # 1. Batch fetch all market data for the heatmap to ensure session consistency
     all_market_tickers = [t for s in MARKET_SEGMENTS[market].values() for t in s]
     batch_data = get_heatmap_data(all_market_tickers)
 
-    # Full company names for cleaner labels
-    COMPANY_NAMES = {
-        "NVDA": "NVIDIA", "AAPL": "Apple", "GOOGL": "Google", "MSFT": "Microsoft",
-        "AMZN": "Amazon", "WMT": "Walmart", "JPM": "JP Morgan", "V": "Visa",
-        "MA": "Mastercard", "BAC": "Bank of America", "GS": "Goldman Sachs"
-    }
-    
-    def format_value(value, symbol="$"):
-        if value >= 1e12: return f"{symbol}{value/1e12:.2f}T"
-        elif value >= 1e9: return f"{symbol}{value/1e9:.2f}B"
-        elif value >= 1e6: return f"{symbol}{value/1e6:.2f}M"
-        return f"{symbol}{value:,.0f}"
-    
     if not batch_data.empty:
-        for sector, companies in MARKET_SEGMENTS[market].items():
-            for p in companies:
+        treemap_records = []
+        sorted_sectors = sorted(MARKET_SEGMENTS[market].keys(), 
+                               key=lambda x: SECTOR_ORDER.index(x) if x in SECTOR_ORDER else 99)
+        
+        for sector in sorted_sectors:
+            companies = MARKET_SEGMENTS[market][sector]
+            for t in companies:
                 try:
-                    # Extract individual ticker data from batch
-                    if p in batch_data.columns.get_level_values(1):
-                        p_data = batch_data.xs(p, axis=1, level=1).dropna(subset=['Close'])
+                    if t in batch_data.columns.get_level_values(1):
+                        p_data = batch_data.xs(t, axis=1, level=1).dropna()
+                        if len(p_data) < 2: continue
                         
-                        if len(p_data) >= 2:
-                            latest_price = p_data['Close'].iloc[-1]
-                            prev_price = p_data['Close'].iloc[-2]
-                            change = ((latest_price / prev_price) - 1) * 100
+                        change = ((p_data['Close'].iloc[-1] / p_data['Close'].iloc[-2]) - 1) * 100
+                        info = get_company_info(t)
+                        
+                        val_key = "marketCap" if size_metric == "Market Cap" else "totalCash"
+                        raw_val = info.get(val_key, 0)
+                        if raw_val <= 0: continue
+                        
+                        label_val = f"{currency_symbol}{raw_val/1e9:.1f}B" if raw_val >= 1e9 else f"{currency_symbol}{raw_val/1e6:.1f}M"
+                        display_name = info.get("shortName", t.split('.')[0])
 
-                            from core.analytics.data_service import get_company_info
-                            info = get_company_info(p)
-                            
-                            display_value = info.get("marketCap", 0) if size_metric == "Market Value" else info.get("totalCash", 0)
-                            formatted_value = format_value(display_value, symbol=currency_symbol)
-                            company_name = COMPANY_NAMES.get(p, info.get("longName", p))
-                
-                            treemap_data.append({
-                                "Country": market,
-                                "Sector": sector,
-                                "Company": company_name,
-                                "FormattedValue": formatted_value,
-                                "Value (millions)": round(display_value / 1_000_000, 2),
-                                "Change": change,
-                                "Metric": size_metric
-                            })
-                except Exception as e:
-                    continue
+                        treemap_records.append({
+                            "Sector": sector,
+                            "Company": display_name,
+                            "Value": raw_val,
+                            "Label": label_val,
+                            "Change": change
+                        })
+                except: continue
+        
+        df_map = pd.DataFrame(treemap_records)
+        if not df_map.empty:
+            fig = px.treemap(
+                df_map,
+                path=["Sector", "Company"],
+                values="Value",
+                color="Change",
+                color_continuous_scale="RdYlGn",
+                color_continuous_midpoint=0,
+                custom_data=["Label", "Change"],
+                height=550
+            )
+            fig.update_traces(
+                texttemplate="<b>%{label}</b>", 
+                hovertemplate="<b>%{label}</b><br>Value: %{customdata[0]}<br>Change: %{customdata[1]:.2f}%",
+                marker=dict(line=dict(width=1, color='#1E2430')),
+                tiling=dict(pad=3)
+            )
+            
+            fig.update_layout(
+                margin=dict(t=10, l=10, r=10, b=10),
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                font_color="white",
+                uniformtext=dict(minsize=10, mode='hide')
+            )
+            st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("📊 Heatmap: Awaiting next session data sync...")
-    
-    treemap_df = pd.DataFrame(treemap_data)
-    
-    if not treemap_df.empty:
-    
-        fig = px.treemap(
-            treemap_df,
-    
-            # Hierarchy
-            path=["Country", "Sector", "Company"],
-    
-            values="Value (millions)",
-    
-            color="Change",
-    
-            color_continuous_scale=[
-                [0.0, "#ff2e2e"],
-                [0.5, "#1e1e1e"],
-                [1.0, "#00ff88"]
-            ],
-    
-            color_continuous_midpoint=0,
-    
-            hover_data={
-                "Value (millions)": ':.2f',
-                "Change": ':.2f'
-            },
-
-            custom_data=["FormattedValue", "Metric"],
-        )
-    
-        fig.update_traces(
-            texttemplate="%{label}<br>%{customdata[0]}",
-        
-            textfont_size=18,
-            textfont_color="white",
-            textfont_family="Arial Black",
-        
-            hovertemplate="""
-            <b>%{label}</b><br>
-            %{customdata[1]}: %{customdata[0]}<br>
-            Change: %{color:.2f}%<br>
-            <extra></extra>
-            """
-        )
-    
-        fig.update_layout(
-            paper_bgcolor="#0E1117",
-            plot_bgcolor="#0E1117",
-            font_color="white",
-    
-            margin=dict(t=2, l=0, r=0, b=0),
-    
-            height=500,
-    
-            uniformtext=dict(
-                minsize=14,
-                mode='hide'
-            )
-        )
-    
-        st.plotly_chart(fig, use_container_width=True)
 
 if __name__ == "__main__":
     main()

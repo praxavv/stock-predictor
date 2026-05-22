@@ -86,6 +86,7 @@ def get_company_info(ticker_symbol: str) -> dict:
             "marketCap": info.get("marketCap", 0),
             "totalCash": info.get("totalCash", 0),
             "longName": info.get("longName", ticker_symbol),
+            "shortName": info.get("shortName", ticker_symbol),
             "sector": info.get("sector", "Unknown"),
             "industry": info.get("industry", "Unknown")
         }
