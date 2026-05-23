@@ -26,14 +26,76 @@ def init_paper_trading():
     if "user" not in st.session_state:
         st.session_state.user = None
 
-    # Initialize defaults if not logged in
-    if not st.session_state.user:
-        if "paper_balance" not in st.session_state:
-            st.session_state.paper_balance = 1000000.0
-        if "paper_holdings" not in st.session_state:
-            st.session_state.paper_holdings = {}
-        if "paper_history" not in st.session_state:
-            st.session_state.paper_history = []
+def initialize_user_session():
+    # Create session defaults only once
+    if "user" not in st.session_state:
+        st.session_state.user = None
+
+    if "paper_balance" not in st.session_state:
+        st.session_state.paper_balance = 1000000.0
+
+    if "paper_holdings" not in st.session_state:
+        st.session_state.paper_holdings = {}
+
+    if "paper_history" not in st.session_state:
+        st.session_state.paper_history = []
+
+    # If logged in, ALWAYS reload latest data from DB
+    if st.session_state.user:
+        data = db.get_user_data(st.session_state.user)
+
+        if data:
+            st.session_state.paper_balance = data["balance"]
+            st.session_state.paper_holdings = data["holdings"]
+            st.session_state.paper_history = data["history"]
+
+
+def login_user(username, password):
+    if db.authenticate_user(username, password):
+
+        # Save logged-in user
+        st.session_state.user = username
+
+        # Load account data
+        data = db.get_user_data(username)
+
+        if data:
+            st.session_state.paper_balance = data["balance"]
+            st.session_state.paper_holdings = data["holdings"]
+            st.session_state.paper_history = data["history"]
+
+        return True
+
+    return False
+
+
+def logout_user():
+    st.session_state.user = None
+    st.session_state.paper_balance = 1000000.0
+    st.session_state.paper_holdings = {}
+    st.session_state.paper_history = {}
+
+    # Migration/Normalization of history data
+    if "paper_history" in st.session_state and st.session_state.paper_history:
+        cleaned_history = []
+        for entry in st.session_state.paper_history:
+            new_entry = entry.copy()
+            # Rename "Time" to "Date/Time" if it exists
+            if "Time" in new_entry and "Date/Time" not in new_entry:
+                new_entry["Date/Time"] = new_entry.pop("Time")
+            
+            # Remove seconds if present in "Date/Time"
+            if "Date/Time" in new_entry:
+                dt_str = str(new_entry["Date/Time"])
+                if ":" in dt_str and len(dt_str.split(":")) > 2: # Has HH:MM:SS
+                    parts = dt_str.split(":")
+                    new_entry["Date/Time"] = f"{parts[0]}:{parts[1]}"
+                    # If it was just time, append a placeholder date since we don't know it
+                    if "," not in dt_str:
+                        new_entry["Date/Time"] += ", (Prev Trade)"
+            
+            cleaned_history.append(new_entry)
+        st.session_state.paper_history = cleaned_history
 
     if "portfolio_history" not in st.session_state:
         st.session_state.portfolio_history = pd.DataFrame(columns=["Timestamp", "TotalValue"])
@@ -78,7 +140,7 @@ def get_heatmap_data(all_market_tickers):
 
 def render_trading_terminal(ticker, currency_symbol):
     st.markdown("---")
-    st.subheader("🛠️ Paper Trading Terminal")
+    st.subheader(" Trading Terminal")
     
     # Batch fetch prices for holdings
     holdings_tickers = list(st.session_state.paper_holdings.keys())
@@ -122,9 +184,10 @@ def render_trading_terminal(ticker, currency_symbol):
                                 h = st.session_state.paper_holdings[ticker]
                                 h['avg_price'] = ((h['avg_price'] * h['quantity']) + cost) / (h['quantity'] + qty)
                                 h['quantity'] += qty
+                                h['date'] = datetime.now().strftime("%d %b %Y")
                             else:
-                                st.session_state.paper_holdings[ticker] = {"quantity": qty, "avg_price": price}
-                            st.session_state.paper_history.append({"Time": datetime.now().strftime("%H:%M:%S"), "Ticker": ticker, "Type": "BUY", "Qty": qty, "Price": price})
+                                st.session_state.paper_holdings[ticker] = {"quantity": qty, "avg_price": price, "date": datetime.now().strftime("%d %b %Y")}
+                            st.session_state.paper_history.append({"Date/Time": datetime.now().strftime("%H:%M, %d %b %Y"), "Ticker": ticker, "Type": "BUY", "Qty": qty, "Price": price})
                             
                             # Persist to DB if logged in
                             if st.session_state.user:
@@ -142,7 +205,7 @@ def render_trading_terminal(ticker, currency_symbol):
                             st.session_state.paper_balance += cost
                             st.session_state.paper_holdings[ticker]['quantity'] -= qty
                             if st.session_state.paper_holdings[ticker]['quantity'] <= 0: del st.session_state.paper_holdings[ticker]
-                            st.session_state.paper_history.append({"Time": datetime.now().strftime("%H:%M:%S"), "Ticker": ticker, "Type": "SELL", "Qty": qty, "Price": price})
+                            st.session_state.paper_history.append({"Date/Time": datetime.now().strftime("%H:%M, %d %b %Y"), "Ticker": ticker, "Type": "SELL", "Qty": qty, "Price": price})
                             
                             # Persist to DB if logged in
                             if st.session_state.user:
@@ -189,7 +252,7 @@ def render_trading_terminal(ticker, currency_symbol):
 def main():
     init_paper_trading()
     ticker, market = render_sidebar()
-    currency_symbol = "₹" if market == "INDIA" else "$"
+    currency_symbol = "₹" if market == "INDIA" or ticker.endswith((".NS", ".BO")) else "$"
     
     st.title("🚀 Market Intelligence Dashboard")
     st.caption(f"Real-time Alpha Generation for {ticker} ({market})")

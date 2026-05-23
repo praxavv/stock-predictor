@@ -34,6 +34,7 @@ def account_management_dialog():
                 st.session_state.paper_balance = data['balance']
                 st.session_state.paper_holdings = data['holdings']
                 st.session_state.paper_history = data['history']
+                st.query_params["user"] = username
                 st.success("Welcome back!")
                 st.rerun()
             else:
@@ -43,6 +44,17 @@ def render_account_section():
     if "user" not in st.session_state:
         st.session_state.user = None
     
+    # Auto-login from query params
+    if not st.session_state.user and "user" in st.query_params:
+        username = st.query_params["user"]
+        data = db.get_user_data(username)
+        if data:
+            st.session_state.user = username
+            st.session_state.paper_balance = data['balance']
+            st.session_state.paper_holdings = data['holdings']
+            st.session_state.paper_history = data['history']
+            st.rerun()
+
     if st.session_state.user:
         st.success(f"Logged in: **{st.session_state.user}**")
         if st.button("Logout", use_container_width=True):
@@ -50,6 +62,7 @@ def render_account_section():
             st.session_state.paper_balance = 1000000.0
             st.session_state.paper_holdings = {}
             st.session_state.paper_history = []
+            st.query_params.clear()
             st.rerun()
     else:
         if st.button("🔐 Open Account / Login", use_container_width=True, type="primary"):
