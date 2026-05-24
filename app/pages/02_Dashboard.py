@@ -284,26 +284,27 @@ def main():
     
     st.markdown("---")
     
-    st.subheader("Alpha Prediction")
+    with col1:
+        st.subheader("Alpha Prediction")
+        
+        try:
+            with st.spinner("Analyzing Patterns..."):
+                model, model_info = train_alpha_model(data)
+                prediction = predict_signal(model, data)
+        
+            color = "green" if prediction['signal'] == 'BULLISH' else "red"
+        
+            st.markdown(
+                f"""
+                ### :{color}[{prediction['signal']}]
+                **Confidence:** {prediction['confidence']:.1%} | 
+                **Backtest Accuracy:** {model_info['accuracy']*100:.1f}%
+                """
+            )
+        
+        except:
+            st.info("Generating predictive signal... (Awaiting more data)")
     
-    try:
-        with st.spinner("Analyzing Patterns..."):
-            model, model_info = train_alpha_model(data)
-            prediction = predict_signal(model, data)
-    
-        color = "green" if prediction['signal'] == 'BULLISH' else "red"
-    
-        st.markdown(
-            f"""
-            ### :{color}[{prediction['signal']}]
-            **Confidence:** {prediction['confidence']:.1%}
-    
-            Confidence score based on {model_info['accuracy']*100:.1f}% historical backtest accuracy.
-            """
-        )
-    
-    except:
-        st.info("Generating predictive signal... (Awaiting more data)")
 
     st.subheader("Institutional Market Movers")
     
