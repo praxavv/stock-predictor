@@ -109,8 +109,15 @@ with col1:
 
 with col2:
     st.subheader(f"🎯 {ticker} Insights")
+
     if "Error" in ai_report:
-        st.error(ai_report)
+        st.info(
+            "🖥️ Neurex AI currently runs only in a local development environment and is not available for public cloud deployment yet."
+        )
+
+        st.caption(
+            "The AI engine depends on local inference infrastructure that is disabled in the public demo."
+        )
     else:
         st.success(ai_report)
     
