@@ -284,23 +284,26 @@ def main():
     
     st.markdown("---")
     
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        st.subheader("Alpha Prediction")
-        try:
-            with st.spinner("Analyzing Patterns..."):
-                model, model_info = train_alpha_model(data)
-                prediction = predict_signal(model, data)
-      
-            confidence_color = "green" if prediction['confidence'] > 0.6 else "orange"
-            with st.container(border=True):
-                st.caption("Next 24h Signal")
-                color = "green" if prediction['signal'] == 'BULLISH' else "red"
-                st.markdown(f"## :{color}[{prediction['signal']}]")
-                st.metric("Confidence", f"{prediction['confidence']:.1%}", delta_color="normal" if prediction['confidence'] > 0.6 else "off")
-            st.caption(f"Confidence score based on {model_info['accuracy']*100:.1f}% historical backtest accuracy.")
-        except:
-            st.info("Generating predictive signal... (Awaiting more data)")
+    t.subheader("Alpha Prediction")
+    
+    try:
+        with st.spinner("Analyzing Patterns..."):
+            model, model_info = train_alpha_model(data)
+            prediction = predict_signal(model, data)
+    
+        color = "green" if prediction['signal'] == 'BULLISH' else "red"
+    
+        st.markdown(
+            f"""
+            ### :{color}[{prediction['signal']}]
+            **Confidence:** {prediction['confidence']:.1%}
+    
+            Confidence score based on {model_info['accuracy']*100:.1f}% historical backtest accuracy.
+            """
+        )
+    
+    except:
+        st.info("Generating predictive signal... (Awaiting more data)")
 
     st.subheader("Institutional Market Movers")
     
