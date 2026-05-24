@@ -283,6 +283,8 @@ def main():
     render_metric_cards(latest_metrics, symbol=currency_symbol)
     
     st.markdown("---")
+
+    col1, col2 = st.columns(2)
     
     with col1:
         st.subheader("Alpha Prediction")
