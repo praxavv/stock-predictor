@@ -295,9 +295,9 @@ def main():
             confidence_color = "green" if prediction['confidence'] > 0.6 else "orange"
             with st.container(border=True):
                 st.caption("Next 24h Signal")
-                color = COLOR_PALETTE['primary'] if prediction['signal'] == 'BULLISH' else COLOR_PALETTE['secondary']
+                color = "green" if prediction['signal'] == 'BULLISH' else "red"
                 st.markdown(f"## :{color}[{prediction['signal']}]")
-                st.metric("Confidence", f"{prediction['confidence']:.1f}%", delta_color="normal" if prediction['confidence'] > 0.6 else "off")
+                st.metric("Confidence", f"{prediction['confidence']:.1%}", delta_color="normal" if prediction['confidence'] > 0.6 else "off")
             st.caption(f"Confidence score based on {model_info['accuracy']*100:.1f}% historical backtest accuracy.")
         except:
             st.info("Generating predictive signal... (Awaiting more data)")
