@@ -284,7 +284,7 @@ def main():
     
     st.markdown("---")
     
-    t.subheader("Alpha Prediction")
+    st.subheader("Alpha Prediction")
     
     try:
         with st.spinner("Analyzing Patterns..."):
