@@ -38,9 +38,7 @@ def initialize_user_session():
         st.session_state.paper_holdings = {}
 
     if "paper_history" not in st.session_state:
-        st.session_state.paper_history = []
-
-initialize_user_session()        
+        st.session_state.paper_history = []       
 
     # If logged in, ALWAYS reload latest data from DB
     if st.session_state.user:
@@ -50,6 +48,8 @@ initialize_user_session()
             st.session_state.paper_balance = data["balance"]
             st.session_state.paper_holdings = data["holdings"]
             st.session_state.paper_history = data["history"]
+
+initialize_user_session()             
 
 
 def login_user(username, password):
