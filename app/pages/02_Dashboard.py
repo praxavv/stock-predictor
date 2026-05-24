@@ -40,6 +40,8 @@ def initialize_user_session():
     if "paper_history" not in st.session_state:
         st.session_state.paper_history = []
 
+initialize_user_session()        
+
     # If logged in, ALWAYS reload latest data from DB
     if st.session_state.user:
         data = db.get_user_data(st.session_state.user)
@@ -271,13 +273,10 @@ def main():
     status_color = "#00FFA3" if is_recent else "#FFB800"
     status_text = "MARKET LIVE" if is_recent else "MARKET CLOSED / ARCHIVE"
     
-    st.markdown(f"""
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-            <div style="background-color: {status_color}; width: 10px; height: 10px; border-radius: 50%;"></div>
-            <span style="color: {status_color}; font-weight: bold; letter-spacing: 1px; font-size: 0.8rem;">{status_text}</span>
-            <span style="color: #888; font-size: 0.8rem;">| LAST SESSION: {last_ts.strftime('%Y-%m-%d %H:%M')}</span>
-        </div>
-    """, unsafe_allow_html=True)
+    if is_recent:
+        st.status("MARKET LIVE", state="complete")
+    else:
+        st.warning(f"MARKET CLOSED | LAST SESSION: {last_ts.strftime('%Y-%m-%d %H:%M')}")
 
     data = calculate_technical_indicators(data)
     latest_metrics = get_latest_metrics(data)
@@ -294,13 +293,11 @@ def main():
                 prediction = predict_signal(model, data)
       
             confidence_color = "green" if prediction['confidence'] > 0.6 else "orange"
-            st.markdown(f"""
-                <div style="background-color: #161A23; padding: 20px; border-radius: 10px; border: 1px solid #1E2430;">
-                    <h4 style="margin: 0; color: #888;">Next 24h Signal</h4>
-                    <h2 style="margin: 10px 0; color: {COLOR_PALETTE['primary'] if prediction['signal'] == 'BULLISH' else COLOR_PALETTE['secondary']}">{prediction['signal']}</h2>
-                    <h4 style="margin: 0; color: {confidence_color};">Confidence: {prediction['confidence']:.1f}%</h4>
-                </div>
-            """, unsafe_allow_html=True)
+            with st.container(border=True):
+                st.caption("Next 24h Signal")
+                color = COLOR_PALETTE['primary'] if prediction['signal'] == 'BULLISH' else COLOR_PALETTE['secondary']
+                st.subheader(f":{color}[{prediction['signal']}]")
+                st.metric("Confidence", f"{prediction['confidence']:.1f}%", delta_color="normal" if prediction['confidence'] > 0.6 else "off")
             st.caption(f"Confidence score based on {model_info['accuracy']*100:.1f}% historical backtest accuracy.")
         except:
             st.info("Generating predictive signal... (Awaiting more data)")

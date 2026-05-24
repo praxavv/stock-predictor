@@ -18,55 +18,107 @@ from core.prediction.predictor import (
 )
 from components.components import render_sidebar
 from core.ai_engine import ask_ai
+from core.ai.rag_service import refresh_news, get_ai_summary
 
-st.set_page_config(page_title="Pranav's Lab", layout="wide")
+
+# ==========================================
+# PAGE CONFIG
+# ==========================================
+
+st.set_page_config(
+    page_title="Neurex AI",
+    layout="wide"
+)
+
+
+# ==========================================
+# SIDEBAR
+# ==========================================
 
 ticker, market = render_sidebar()
 
-st.title("🤖 Quant Research Lab")
-st.caption(f"Experimental AI Analysis for {ticker}")
+
+# ==========================================
+# HEADER
+# ==========================================
+
+st.title("AI Report by Neurex")
+st.caption(f"Synthesized analysis for {ticker}")
+
+
+# ==========================================
+# LOAD MARKET DATA
+# ==========================================
 
 data = get_stock_data(ticker)
 
 if data.empty:
-    st.error(f"Could not load market data for {ticker}. AI analysis requires historical price feeds.")
-else:
-    with st.spinner("Generating AI Insights..."):
-        data = calculate_technical_indicators(data)
-        latest_metrics = get_latest_metrics(data)
-        model, model_info = train_alpha_model(data)
-        prediction = predict_signal(model, data)
+    st.error(
+        f"Could not load market data for {ticker}. "
+        "AI analysis requires historical price feeds."
+    )
+    st.stop()
 
-        # =========================
-        # AI Commentary Section
-        # =========================
 
-        ai_context = {
-            "ticker": ticker,
-            "market": market,
-            "latest_price": round(latest_metrics['price'], 2),
-            "rsi": round(latest_metrics['rsi'], 2),
-            "ma50": round(latest_metrics['ma50'], 2),
-            "signal": prediction['signal'],
-            "confidence": round(prediction['confidence'], 2),
-            "model_accuracy": round(model_info['accuracy'] * 100, 2)
-        }
+# ==========================================
+# MAIN AI PIPELINE
+# ==========================================
 
-        ai_commentary = ask_ai(ai_context)
+with st.spinner("Analyzing markets..."):
 
-        st.caption(f"Model accuracy: {model_info['accuracy']*100:.1f}% based on historical patterns.")
+    # Technical analysis
+    data = calculate_technical_indicators(data)
+    latest_metrics = get_latest_metrics(data)
 
-        st.markdown("### 🤖 AI Market Commentary")
-        st.markdown(f"""
-        <div style="
-            background-color: #161A23;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #1E2430;
-            color: white;
-            line-height: 1.6;
-        ">
-            <h4 style="margin-top:0;">🧠 AI Market Commentary</h4>
-            <p>{ai_commentary}</p>
-        </div>
-        """, unsafe_allow_html=True)
+    # Prediction model
+    model, model_info = train_alpha_model(data)
+    prediction = predict_signal(model, data)
+
+    # Market news summary
+    market_summary = get_ai_summary()
+
+    # AI Context
+    ai_context = {
+        "ticker": ticker,
+        "market": market,
+        "latest_price": round(latest_metrics["price"], 2),
+        "rsi": round(latest_metrics["rsi"], 2),
+        "ma50": round(latest_metrics["ma50"], 2),
+        "signal": prediction["signal"],
+        "confidence": round(prediction["confidence"], 2),
+        "news_summary": market_summary
+    }
+
+    # Generate AI Report
+    ai_report = ask_ai(ai_context)
+
+
+# ==========================================
+# OUTPUT DISPLAY
+# ==========================================
+
+col1, col2 = st.columns([1, 1])
+
+with col1:
+    st.subheader("🌐 Market Summary")
+    st.info(market_summary)
+    if st.button("🔄 Refresh Market News"):
+        with st.spinner("Updating news..."):
+            refresh_news()
+            st.rerun()
+
+with col2:
+    st.subheader(f"🎯 {ticker} Insights")
+    if "Error" in ai_report:
+        st.error(ai_report)
+    else:
+        st.success(ai_report)
+    
+    # Simple data table for the "info about specific stock" part
+    st.write(f"**Current Price:** ${latest_metrics['price']:.2f}")
+    st.write(f"**Signal:** {prediction['signal'].upper()} ({prediction['confidence']:.1%})")
+    st.write(f"**Technical RSI:** {latest_metrics['rsi']:.2f}")
+    st.write(f"**Moving Average (50d):** ${latest_metrics['ma50']:.2f}")
+
+st.divider()
+st.caption(f"Powered by Neurex AI | Model: gemma3:270m | Accuracy: {model_info['accuracy']:.1%}")
