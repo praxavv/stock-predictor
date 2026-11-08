@@ -100,21 +100,21 @@ with st.spinner("Analyzing markets..."):
 col1, col2 = st.columns([1, 1])
 
 with col1:
-st.subheader("🌐 Market Summary")
+    st.subheader("🌐 Market Summary")
 
-if "Error" in market_summary or "Connection refused" in market_summary:
-    st.info(
-        "🖥️ Live AI-powered market news aggregation is available only in the local Neurex environment."
-    )
+    if "Error" in market_summary or "Connection refused" in market_summary:
+        st.info(
+            "🖥️ Live AI-powered market news aggregation is available only in the local Neurex environment."
+        )
 
-    st.caption(
-        "The public cloud demo runs without the private local news and inference infrastructure."
-    )
-else:
-    st.info(market_summary)
+        st.caption(
+            "The public cloud demo runs without the private local news and inference infrastructure."
+        )
+    else:
+        st.info(market_summary)
 
-with col2:
-    st.subheader(f"🎯 {ticker} Insights")
+    with col2:
+        st.subheader(f"🎯 {ticker} Insights")
 
     if "Error" in ai_report:
         st.info(
