@@ -1,6 +1,13 @@
 import streamlit as st
 import sys
 import os
+from core.database import DB_PATH
+
+st.write("Database exists:", os.path.exists(DB_PATH))
+
+if os.path.exists(DB_PATH):
+    st.write("Database path:", DB_PATH)
+    st.write("Database size:", os.path.getsize(DB_PATH), "bytes")
 
 # Add the project root and app directory to the python path
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
