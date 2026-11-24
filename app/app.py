@@ -1,4 +1,5 @@
 import streamlit as st
+import sqlite3
 import sys
 import os
 from core.database import DB_PATH
