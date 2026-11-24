@@ -9,6 +9,16 @@ if os.path.exists(DB_PATH):
     st.write("Database path:", DB_PATH)
     st.write("Database size:", os.path.getsize(DB_PATH), "bytes")
 
+    conn = sqlite3.connect(DB_PATH)
+
+    users = conn.execute(
+        "SELECT COUNT(*) FROM users"
+    ).fetchone()[0]
+
+    st.write("Registered users:", users)
+
+    conn.close()
+
 # Add the project root and app directory to the python path
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(root_dir)
