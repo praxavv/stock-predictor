@@ -47,3 +47,6 @@ Jenkinsfile.bak
 
 # Test files
 test.py
+
+# Streamlit secrets — NEVER commit
+.streamlit/secrets.toml
