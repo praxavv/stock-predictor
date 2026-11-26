@@ -124,7 +124,8 @@ def create_user(username: str, email: str, password: str) -> bool:
 
         return True
 
-    except Exception:
+    except Exception as exc:  # TODO: remove before final deploy
+        st.error(f"Signup database error: {type(exc).__name__}: {exc}")
         return False
 
 
